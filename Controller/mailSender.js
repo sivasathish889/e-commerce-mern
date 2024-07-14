@@ -6,15 +6,15 @@ const mailSend =async (mail, sub, text)=>{
     const transport =mailSender.createTransport({
         service: "gmail",
         auth: {
-            user: "rdxsathish96@gmail.com",
-            pass: "bcwinujcthfhdaal"
+            user: process.env.MAIL_USER,
+            pass: process.env.MAIL_PASS
         },
     })
     const mailOptions = {
-        from: "rdxsathish96@gmail.com",
+        from: process.env.MAIL_USER,
         to: mail,
         subject: sub,
-        text: text
+        text: text,
     }
     transport.sendMail(mailOptions, function(error, info){
         if (error) {

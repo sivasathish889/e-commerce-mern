@@ -1,10 +1,10 @@
 const express = require("express")
 const app = express()
-const PORT = 5000
+const PORT = process.env.PORT || 5000
 const path = require("path")
 const env = require("dotenv")
-let connectDb = require("./db")
 const routes = require("./route")
+let connectDb = require("./db")
 const cookie_parse = require("cookie-parser")
 const Logger = require("./middlewere/logger")
 
@@ -14,6 +14,8 @@ app.use(cookie_parse())
 app.use(express.urlencoded({extended : false}))
 app.use(express.static(path.join(__dirname, "public")))
 env.config()
+
+// custom middleware for activity logging
 app.use(Logger)
 
 // render engine

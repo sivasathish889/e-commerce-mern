@@ -66,20 +66,20 @@ const RegsiterController = async (req,res)=>{
                 "email" : email,
                 "password" : hashPassword,
                 "otp"  : otp
-             }, process.env.JWT_STRING )
+             }, process.env.JWT_STRING, {expiresIn : "5m"} )
 
             // mail sending
-            const subject = "Siva Website"
-            const text = `wecome to our page. Your otp is ${otp}`
+            const subject = `Your Code - ${otp}` 
+            const text = `Your OTP is ${ otp }. Use it to verify your email in shiva e-commerce store. This is expired within 5 minutes`
             mailOptions(email,subject, text)
 
             //  Cookie set
-            res.cookie("jwt" , token)
             res.cookie("user",jwt.sign({
                 "username" : username,
                 "email" : email,
                 "password" : hashPassword,
-             }, process.env.JWT_STRING ))
+            }, process.env.JWT_STRING ),{maxAge : new Date(Date.now() + 30 * 24 * 3600000)})
+            res.cookie("jwt" , token, { expires : new Date(Date.now() + 360000)})
 
             res.status(200).redirect("/register/verify")
         }
@@ -109,12 +109,17 @@ const verifyUser =async (req,res)=>{
 
     // otp verification
     try {
-        if(otp==data.otp){
-            await User.create({username, email, password, token })
-            res.status(200).redirect("/login")
+        if (token) {
+            if(otp == data.otp){
+                await User.create({username, email, password, token })
+                res.status(200).redirect("/login")
+            }
+            else{
+                res.status(400).send({"message" : "Otp does not match"})
+            }
         }
         else{
-            res.status(400).send({"message" : "Otp does not match"})
+            res.status(400).send({"message" : "Otp expired"})
         }
     } catch (error) {
         res.status(400).send({"message" : error.message})
