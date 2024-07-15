@@ -2,7 +2,9 @@ const express = require("express")
 const routes = express.Router()
 const { LoginPage, LoginController, RegisterPage, RegsiterController, verifyUser, verifyPage } = require("./Controller/authController")
 const { HomePage, ProfilePage } = require("./Controller/Home.controller")
-
+const isAuth = require("./middlewere/isAuth")
+const fileUpload = require("./middlewere/fileUpload")
+const adminContoller = require("./Controller/adminController")
 routes.route("/")
     .get(HomePage)
 
@@ -19,7 +21,9 @@ routes.route("/login")
     .post(LoginController)
 
 routes.route("/profile")
-    .get(ProfilePage)
+    .get( isAuth, ProfilePage)
 
+routes.route("/admin")
+    .get(adminContoller)
 
 module.exports = routes

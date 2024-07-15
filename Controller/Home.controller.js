@@ -5,7 +5,8 @@ const HomePage = (req,res)=>{
 }
 
 const ProfilePage = (req,res)=>{
-    res.render("profile", {"title" : "Profile Page"})
+    const {username, email, role} = req.user
+    res.render("profile", {"title" : username})
 }
 
 module.exports = { HomePage, ProfilePage}

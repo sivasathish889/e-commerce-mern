@@ -1,7 +1,7 @@
 const User = require("../models/authModels")
 const jwt = require("jsonwebtoken")
 const { hashPass, comparePass } = require("./bcrypt.controller")
-const mailOptions = require("./mailSender")
+const mailOptions = require("../middlewere/mailSender")
 
 
 const LoginPage = (req,res)=>{
@@ -18,6 +18,7 @@ const LoginController =async (req,res) =>{
             if(!user.length == 0){
                 let hashingPass = comparePass( password, user[0].password)
                 if(hashingPass){
+                    res.cookie("user", jwt.sign( user[0]._id.toString(),process.env.JWT_STRING))
                     res.status(200).redirect("/")
                 }
                 else{
@@ -74,11 +75,6 @@ const RegsiterController = async (req,res)=>{
             mailOptions(email,subject, text)
 
             //  Cookie set
-            res.cookie("user",jwt.sign({
-                "username" : username,
-                "email" : email,
-                "password" : hashPassword,
-            }, process.env.JWT_STRING ),{maxAge : new Date(Date.now() + 30 * 24 * 3600000)})
             res.cookie("jwt" , token, { expires : new Date(Date.now() + 360000)})
 
             res.status(200).redirect("/register/verify")

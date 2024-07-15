@@ -5,14 +5,16 @@ const path = require("path")
 const env = require("dotenv")
 const routes = require("./route")
 let connectDb = require("./db")
-const cookie_parse = require("cookie-parser")
+const cookie_parser = require("cookie-parser")
 const Logger = require("./middlewere/logger")
 
 // middleware
 app.use(express.json())
-app.use(cookie_parse())
+app.use(cookie_parser())
 app.use(express.urlencoded({extended : false}))
-app.use(express.static(path.join(__dirname, "public")))
+app.use(express.static(path.join(__dirname, "public/css/style.css")))
+
+// Dot env configuration
 env.config()
 
 // custom middleware for activity logging
