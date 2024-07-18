@@ -4,7 +4,10 @@ const { LoginPage, LoginController, RegisterPage, RegsiterController, verifyUser
 const { HomePage, ProfilePage } = require("./Controller/Home.controller")
 const isAuth = require("./middlewere/isAuth")
 const fileUpload = require("./middlewere/fileUpload")
-const adminContoller = require("./Controller/adminController")
+const { ProductPage,ProductController } = require("./Controller/products/ProductController")
+const {adminContoller, adminPage} = require("./Controller/admin/adminAuthController");
+
+
 routes.route("/")
     .get(HomePage)
 
@@ -21,9 +24,13 @@ routes.route("/login")
     .post(LoginController)
 
 routes.route("/profile")
-    .get( isAuth, ProfilePage)
+    .get(isAuth, ProfilePage)
 
 routes.route("/admin")
-    .get(adminContoller)
+    .post(adminContoller)
+    .get(adminPage)
 
+routes.route("/admin/products")
+    .get(ProductPage)
+    .post(ProductController)
 module.exports = routes

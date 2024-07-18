@@ -1,6 +1,6 @@
 const User = require("../models/authModels")
 const jwt = require("jsonwebtoken")
-const { hashPass, comparePass } = require("./bcrypt.controller")
+const { hashPass, comparePass } = require("../middlewere/bcrypt.controller")
 const mailOptions = require("../middlewere/mailSender")
 
 
@@ -11,18 +11,25 @@ const LoginPage = (req,res)=>{
 
 const LoginController =async (req,res) =>{
     const {username, password} = req.body
+    console.log(req.headers)
+
     try {
         if(username || password){
             await User.find({username:username})
             .then((user)=>{
-            if(!user.length == 0){
-                let hashingPass = comparePass( password, user[0].password)
-                if(hashingPass){
-                    res.cookie("user", jwt.sign( user[0]._id.toString(),process.env.JWT_STRING))
-                    res.status(200).redirect("/")
+            if(user[0].role  == "user"){
+                if(!user.length == 0){
+                    let hashingPass = comparePass( password, user[0].password)
+                    if(hashingPass){
+                        res.cookie("user", jwt.sign( user[0]._id.toString(),process.env.JWT_STRING))
+                        res.status(200).redirect("/")
+                    }
+                    else{
+                        res.status(400).json({message:"Password is incorrect"})
+                    }
                 }
                 else{
-                    res.status(400).json({message:"Password is incorrect"})
+                    res.status(400).render("login", { "message" : "User not Found"})
                 }
             }
             else{
