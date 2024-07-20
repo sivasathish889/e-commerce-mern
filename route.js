@@ -2,7 +2,7 @@ const express = require("express")
 const routes = express.Router()
 const { LoginPage, LoginController, RegisterPage, RegsiterController, verifyUser, verifyPage } = require("./Controller/authController")
 const { HomePage, ProfilePage } = require("./Controller/Home.controller")
-const isAuth = require("./middlewere/isAuth")
+const {isAuth, isAdminAuth} = require("./middlewere/isAuth")
 const fileUpload = require("./middlewere/fileUpload")
 const { ProductPage,ProductController } = require("./Controller/products/ProductController")
 const {adminContoller, adminPage} = require("./Controller/admin/adminAuthController");
@@ -31,6 +31,8 @@ routes.route("/admin")
     .get(adminPage)
 
 routes.route("/admin/products")
-    .get(ProductPage)
-    .post(ProductController)
+    .get(isAdminAuth ,ProductPage)
+    .post(isAdminAuth, fileUpload, ProductController)
+
+
 module.exports = routes

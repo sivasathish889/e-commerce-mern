@@ -7,15 +7,24 @@ const routes = require("./route")
 let connectDb = require("./db")
 const cookie_parser = require("cookie-parser")
 const Logger = require("./middlewere/logger")
+const session = require("express-session")
+
+
+// Dot env configuration
+env.config()
+
 
 // middleware
 app.use(express.json())
 app.use(cookie_parser())
 app.use(express.urlencoded({extended : false}))
 app.use(express.static(path.join(__dirname, "public/css/style.css")))
+app.use(session({
+    secret : process.env.SESSION_SECRET,    
+    saveUninitialized : false,
+    resave : false,
+}))
 
-// Dot env configuration
-env.config()
 
 // custom middleware for activity logging
 app.use(Logger)
